@@ -1,12 +1,62 @@
-# React + Vite
+# Olá, eu sou o Gabriel do Nascimento Rodrigues
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sou um desenvolvedor apaixonado por criar interfaces modernas e funcionais. Este repositório contém meu portfólio pessoal, desenvolvido com React e Vite, destacando minhas habilidades e projetos.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologias Utilizadas
 
-## Expanding the ESLint configuration
+* **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+* **Vite**: Ferramenta de build rápida e moderna para desenvolvimento.
+* **ESLint**: Ferramenta para identificar e corrigir problemas no código JavaScript.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Como Rodar o Projeto
+
+1. Clone este repositório para sua máquina local:
+
+   ```bash
+   git clone https://github.com/pombinhagab/portfolio.git
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   cd portfolio
+   npm install
+   ```
+
+3. Inicie o servidor de desenvolvimento:
+
+   ```bash
+   npm run dev
+   ```
+
+O projeto estará disponível em [http://localhost:3000](http://localhost:3000) ou você pode acessá-lo diretamente online via GitHub Pages: [https://pombinhagab.github.io/portfolio/](https://pombinhagab.github.io/portfolio/).
+
+---
+
+## Estrutura do Projeto
+
+* `src/`: Contém os arquivos de código-fonte.
+* `public/`: Contém os arquivos estáticos.
+* `.gitignore`: Especifica quais arquivos devem ser ignorados pelo Git.
+* `.env`: Contém variáveis de ambiente.
+* `package.json`: Gerencia as dependências e scripts do projeto.
+* `vite.config.js`: Configurações do Vite.
+* `eslint.config.js`: Configurações do ESLint.
+
+---
+
+## Sobre o Projeto
+
+Este portfólio foi desenvolvido para apresentar minhas habilidades em desenvolvimento front-end. Utilizando React, criei componentes reutilizáveis e uma interface responsiva. O Vite foi escolhido pela sua velocidade e eficiência no processo de build.
+
+---
+
+## Entre em Contato
+
+* GitHub: [https://github.com/pombinhagab](https://github.com/pombinhagab)
+* LinkedIn: [https://www.linkedin.com/in/gabrielpombim](https://www.linkedin.com/in/gabrielpombim)
+* Email: [gabriel.pombim@gmail.com](mailto:gabriel.pombim@gmail.com)
