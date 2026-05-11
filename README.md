@@ -17,7 +17,7 @@ Sou um desenvolvedor apaixonado por criar interfaces modernas e funcionais. Este
 1. Clone este repositório para sua máquina local:
 
    ```bash
-   git clone https://github.com/pombinhagab/portfolio.git
+   git clone https://github.com/gabnasc-dev/portfolio.git
    ```
 
 2. Instale as dependências:
@@ -57,6 +57,6 @@ Este portfólio foi desenvolvido para apresentar minhas habilidades em desenvolv
 
 ## Entre em Contato
 
-* GitHub: [https://github.com/pombinhagab](https://github.com/pombinhagab)
-* LinkedIn: [https://www.linkedin.com/in/gabrielpombim](https://www.linkedin.com/in/gabrielpombim)
-* Email: [gabriel.pombim@gmail.com](mailto:gabriel.pombim@gmail.com)
+* GitHub: [https://github.com/gabnasc-dev](https://github.com/gabnasc-dev)
+* LinkedIn: [https://www.linkedin.com/in/gabriel-do-nascimento-rodrigues-b96177323/](https://www.linkedin.com/in/gabriel-do-nascimento-rodrigues-b96177323/)
+* Email: [gabrielnascimento12t@gmail.com](mailto:gabrielnascimento12t@gmail.com)
