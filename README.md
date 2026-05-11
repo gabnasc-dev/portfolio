@@ -33,7 +33,7 @@ Sou um desenvolvedor apaixonado por criar interfaces modernas e funcionais. Este
    npm run dev
    ```
 
-O projeto estará disponível em [http://localhost:3000](http://localhost:3000) ou você pode acessá-lo diretamente online via GitHub Pages: [https://pombinhagab.github.io/portfolio/](https://pombinhagab.github.io/portfolio/).
+O projeto estará disponível em [http://localhost:3000](http://localhost:3000) ou você pode acessá-lo diretamente online via GitHub Pages: [https://pombinhagab.github.io/portfolio/](https://gabnasc-dev.github.io/portfolio/).
 
 ---
 
