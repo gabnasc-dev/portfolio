@@ -26,7 +26,7 @@ export const Home = () => {
               Fale Comigo
             </a>
             <a
-              href="https://github.com/pombinhagab"
+              href="https://github.com/gabnasc-dev"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-gray-800 text-white py-3 px-6 rounded font-medium flex items-center gap-2 transition hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(75,85,99,0.4)]"
