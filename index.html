@@ -1,19 +1,120 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gabriel do Nascimento - Portfólio</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-a_h5sTUc.js"></script>
-    <link rel="stylesheet" crossorigin href="/portfolio/assets/index-Dvm4pyuv.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>NebulaOS — Gabriel do Nascimento Rodrigues</title>
+  <meta name="description" content="Portfólio de Gabriel do Nascimento Rodrigues — desenvolvedor backend & web. Um sistema operacional fictício à deriva no espaço profundo." />
+  <meta name="theme-color" content="#03050d" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='34' fill='none' stroke='%232f7dff' stroke-width='7'/><circle cx='50' cy='50' r='10' fill='%2363d2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="/portfolio/assets/index-DR85QrKT.js"></script>
+  <link rel="stylesheet" crossorigin href="/portfolio/assets/index-DKaKxJQE.css">
+</head>
+<body>
+  <!-- ── Fundo: nebulosa, estrelas, partículas ───────────────────────── -->
+  <canvas id="space" aria-hidden="true"></canvas>
+  <canvas id="space-fx" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="torch" id="torch" aria-hidden="true"></div>
+
+  <!-- ── Boot ────────────────────────────────────────────────────────── -->
+  <div class="boot" id="boot">
+    <div class="boot__inner">
+      <div class="boot__logo">
+        <svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true">
+          <circle cx="50" cy="50" r="34" fill="none" stroke="url(#bg1)" stroke-width="5" />
+          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(47,125,255,.25)" stroke-width="1" />
+          <circle cx="50" cy="50" r="9" fill="#63d2ff" />
+          <defs>
+            <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2f7dff" /><stop offset="1" stop-color="#63d2ff" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <pre class="boot__log" id="boot-log"></pre>
+      <div class="boot__bar"><span id="boot-bar-fill"></span></div>
+    </div>
+  </div>
+
+  <!-- ── Mundo (câmera) ──────────────────────────────────────────────── -->
+  <main class="world" id="world">
+
+    <!-- Terminal -->
+    <section class="layer layer--terminal is-active" id="layer-terminal">
+      <div class="win win--terminal" id="terminal-window">
+        <header class="win__bar" id="terminal-bar">
+          <div class="win__id">
+            <span class="win__dot" aria-hidden="true"></span>
+            <span class="win__title">nebula://gabriel — /bin/nsh</span>
+          </div>
+          <div class="win__ctrls">
+            <button class="win__btn" data-win-action="minimize" title="Minimizar" aria-label="Minimizar">&#8211;</button>
+            <button class="win__btn" data-win-action="maximize" title="Maximizar" aria-label="Maximizar">&#9723;</button>
+            <button class="win__btn win__btn--close" data-win-action="close" title="Encerrar sessão" aria-label="Encerrar sessão">&#10005;</button>
+          </div>
+        </header>
+        <div class="win__body term" id="term">
+          <div class="term__out" id="term-out" aria-live="polite"></div>
+          <!-- Sem espaços entre os spans: eles virariam texto renderizado. -->
+          <div class="term__line" id="term-line"><span class="term__prompt" id="term-prompt"></span><span class="term__input-wrap"><span class="term__ghost" id="term-ghost"></span><span class="term__typed" id="term-typed"></span><span class="term__cursor" id="term-cursor"></span></span></div>
+        </div>
+        <footer class="win__status">
+          <span id="status-path">~</span>
+          <span class="win__status-sep"></span>
+          <span class="win__status-hint">TAB completa · ↑↓ histórico · <kbd>help</kbd> para começar</span>
+          <span class="win__status-spacer"></span>
+          <span id="status-clock">--:--</span>
+        </footer>
+        <!-- Captura de teclado. Fica FORA de #term de propósito: dentro do
+             container que rola, o navegador rolava até este input a cada
+             tecla e jogava o terminal para o topo. -->
+        <input id="term-real" class="term__real" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Entrada do terminal" />
+      </div>
+    </section>
+
+    <!-- Constelação de projetos -->
+    <section class="layer layer--constellation" id="layer-constellation" aria-hidden="true">
+      <div class="constellation" id="constellation">
+        <svg class="constellation__links" id="constellation-links" aria-hidden="true"></svg>
+        <div class="constellation__stars" id="constellation-stars"></div>
+      </div>
+      <div class="layer__hud">
+        <p class="layer__hud-title">SETOR 07 · CONSTELAÇÃO DE PROJETOS</p>
+        <p class="layer__hud-sub">Clique em uma estrela para aproximar a câmera</p>
+      </div>
+      <button class="back-btn" data-back title="Voltar ao terminal">&#8592; voltar ao terminal <span>ESC</span></button>
+    </section>
+
+    <!-- Skill tree -->
+    <section class="layer layer--skills" id="layer-skills" aria-hidden="true">
+      <div class="skilltree" id="skilltree">
+        <svg viewBox="0 0 1000 640" class="skilltree__svg" id="skilltree-svg" role="img" aria-label="Árvore de habilidades"></svg>
+        <div class="skilltip" id="skilltip" role="tooltip"></div>
+      </div>
+      <div class="layer__hud">
+        <p class="layer__hud-title">NÚCLEO DE HABILIDADES · v2.5</p>
+        <p class="layer__hud-sub">Passe o mouse sobre um nó para inspecionar</p>
+      </div>
+      <button class="back-btn" data-back title="Voltar ao terminal">&#8592; voltar ao terminal <span>ESC</span></button>
+    </section>
+  </main>
+
+  <!-- Janelas flutuantes (projetos, jogos, easter eggs) -->
+  <div class="windows" id="windows"></div>
+
+  <!-- Rodapé de sistema -->
+  <footer class="sysbar" id="sysbar">
+    <span class="sysbar__brand">NebulaOS</span>
+    <span class="sysbar__v">v2.5.0</span>
+    <span class="sysbar__spacer"></span>
+    <span class="sysbar__item" id="sysbar-cmd">idle</span>
+    <span class="sysbar__item sysbar__item--pulse">SIGNAL ●</span>
+  </footer>
+
+</body>
 </html>
