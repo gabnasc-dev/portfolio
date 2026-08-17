@@ -16,7 +16,7 @@ export const profile = {
     'com foco em código limpo, alto desempenho e ambientes reprodutíveis.',
   education: [
     { title: 'Engenharia de Software', org: 'UniAcademia', detail: '6º período' },
-    { title: 'Django Master', org: 'Felipe Azambuja', detail: 'em andamento' },
+    { title: 'Django Master', org: 'Felipe Azambuja', detail: 'concluído' },
   ],
   now: [
     'Aprendendo Java + Spring Boot para expandir o stack backend',
