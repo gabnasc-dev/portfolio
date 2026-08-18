@@ -1,24 +1,12 @@
-/**
- * Fundo: nebulosa de espaço profundo pintada uma única vez em canvas
- * offscreen, com estrelas cintilantes, partículas à deriva, linhas
- * luminosas entre partículas próximas e meteoros ocasionais.
- *
- * Orçamento por frame: a nebulosa E a maioria das estrelas são bitmap
- * estático (só redesenhado em resize). Por frame ficam apenas ~70 estrelas
- * que piscam, as partículas, três strokes de ligação e os meteoros.
- */
-
-const STAR_DENSITY = 1 / 5200;      // estrelas por px²
-const PARTICLE_DENSITY = 1 / 30000; // partículas por px²
+const STAR_DENSITY = 1 / 5200;
+const PARTICLE_DENSITY = 1 / 30000;
 const MAX_PARTICLES = 58;
-const MAX_LIVE_STARS = 70;          // estrelas animadas; o resto vai pro bitmap
+const MAX_LIVE_STARS = 70;
 const LINK_DIST = 132;
-const LINK_TIERS = 3;               // agrupa as ligações em N strokes, não N linhas
+const LINK_TIERS = 3;
 
 export function initBackground(canvas, fxCanvas) {
-  // Camada estática: recebe a nebulosa e só é tocada em resize.
   const nctx = canvas.getContext('2d', { alpha: false });
-  // Camada animada: transparente, limpa e redesenhada a cada frame.
   const ctx = fxCanvas.getContext('2d');
 
   let w = 0, h = 0, dpr = 1;
@@ -33,10 +21,7 @@ export function initBackground(canvas, fxCanvas) {
 
   const rand = (a, b) => a + Math.random() * (b - a);
 
-  // Máquinas modestas recebem menos partículas — o loop de ligação é O(n²).
   const lowPower = (navigator.hardwareConcurrency ?? 8) <= 4;
-
-  /* ── Populações ─────────────────────────────────────────────────── */
 
   function seed() {
     const total = Math.min(340, Math.floor(w * h * STAR_DENSITY));
@@ -50,7 +35,6 @@ export function initBackground(canvas, fxCanvas) {
       hue: Math.random() < 0.8 ? 'rgba(200, 224, 255,' : 'rgba(150, 195, 255,',
     }));
 
-    // As maiores cintilam (é onde o olho percebe); as pequenas viram bitmap.
     all.sort((a, b) => b.r - a.r);
     liveStars = all.slice(0, MAX_LIVE_STARS);
     bakedStars = all.slice(MAX_LIVE_STARS);
@@ -67,10 +51,7 @@ export function initBackground(canvas, fxCanvas) {
     }));
   }
 
-  /* ── Nebulosa estática (+ estrelas assadas) ─────────────────────── */
-
   function paintNebula() {
-    // Base: preto com um leve degradê azul-marinho
     const base = nctx.createLinearGradient(0, 0, w * 0.4, h);
     base.addColorStop(0, '#04060f');
     base.addColorStop(0.55, '#050914');
@@ -78,7 +59,6 @@ export function initBackground(canvas, fxCanvas) {
     nctx.fillStyle = base;
     nctx.fillRect(0, 0, w, h);
 
-    // Nuvens: manchas radiais sobrepostas em "screen"
     nctx.globalCompositeOperation = 'screen';
     const clouds = [
       { x: 0.24, y: 0.30, r: 0.62, c: [30, 62, 140], a: 0.30 },
@@ -101,7 +81,6 @@ export function initBackground(canvas, fxCanvas) {
       nctx.fillRect(0, 0, w, h);
     }
 
-    // Filamentos: traços finos e curvos, como fios de gás iluminado
     nctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 22; i++) {
       const x0 = rand(-0.1, 1.1) * w;
@@ -122,7 +101,6 @@ export function initBackground(canvas, fxCanvas) {
     }
     nctx.filter = 'none';
 
-    // Poeira estelar: micro-pontos densos
     const dust = Math.floor(w * h / 2400);
     for (let i = 0; i < dust; i++) {
       const a = rand(0.015, 0.09);
@@ -130,7 +108,6 @@ export function initBackground(canvas, fxCanvas) {
       nctx.fillRect(rand(0, w), rand(0, h), 1, 1);
     }
 
-    // Estrelas que não cintilam: pintadas de vez, custo zero por frame
     for (const s of bakedStars) {
       nctx.fillStyle = `${s.hue}${s.base.toFixed(2)})`;
       nctx.beginPath();
@@ -142,11 +119,7 @@ export function initBackground(canvas, fxCanvas) {
   }
 
   function resize() {
-    // Teto de 1.5: acima disso o ganho visual é marginal e a taxa de
-    // preenchimento (que é o gargalo aqui) cresce com o quadrado do fator.
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    // Uma aba oculta pode reportar 0×0; o canvas precisa de ao menos 1px
-    // para ser usado como fonte em drawImage.
     w = Math.max(1, window.innerWidth || canvas.clientWidth);
     h = Math.max(1, window.innerHeight || canvas.clientHeight);
     for (const c of [canvas, fxCanvas]) {
@@ -161,16 +134,8 @@ export function initBackground(canvas, fxCanvas) {
     paintNebula();
   }
 
-  /* ── Loop ───────────────────────────────────────────────────────── */
-
-  // Buckets reaproveitados entre frames — evita alocar arrays a cada frame.
   const tiers = Array.from({ length: LINK_TIERS }, () => []);
 
-  /* Degradação automática: em vez de assumir que toda máquina aguenta o
-     fundo completo, medimos o tempo real de frame. Se o navegador não está
-     conseguindo manter ~50fps, passamos a desenhar a 30fps e cortamos as
-     ligações entre partículas (o item mais caro). Volta sozinho quando
-     sobra folga. */
   let emaDt = 16.7;
   let degraded = false;
   let lastT = performance.now();
@@ -182,7 +147,6 @@ export function initBackground(canvas, fxCanvas) {
 
     const dt = now - lastT;
     lastT = now;
-    // Ignora saltos grandes (aba voltando do segundo plano) na média.
     if (dt > 0 && dt < 200) emaDt = emaDt * 0.92 + dt * 0.08;
     if (!degraded && emaDt > 24) degraded = true;
     else if (degraded && emaDt < 15) degraded = false;
@@ -197,11 +161,9 @@ export function initBackground(canvas, fxCanvas) {
 
     t += Math.min(dt, 50) / 1000;
 
-    // Só a camada animada é limpa — a nebulosa embaixo permanece intacta.
     ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = 'lighter';
 
-    // Estrelas cintilantes
     for (const s of liveStars) {
       const tw = s.base + Math.sin(t * s.sp + s.ph) * 0.28;
       const a = Math.max(0.05, Math.min(1, tw));
@@ -210,7 +172,6 @@ export function initBackground(canvas, fxCanvas) {
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Halo apenas nas maiores — barato e dá profundidade
       if (s.r > 1.25) {
         ctx.fillStyle = `rgba(120, 175, 255, ${a * 0.1})`;
         ctx.beginPath();
@@ -219,14 +180,12 @@ export function initBackground(canvas, fxCanvas) {
       }
     }
 
-    // Partículas
     for (const p of particles) {
       p.x += p.vx;
       p.y += p.vy;
       if (p.x < -20) p.x = w + 20; else if (p.x > w + 20) p.x = -20;
       if (p.y < -20) p.y = h + 20; else if (p.y > h + 20) p.y = -20;
 
-      // Atração sutil ao cursor — a lanterna "mexe" na poeira
       const dxp = pointer.x - p.x;
       const dyp = pointer.y - p.y;
       const dp2 = dxp * dxp + dyp * dyp;
@@ -244,8 +203,6 @@ export function initBackground(canvas, fxCanvas) {
       ctx.fill();
     }
 
-    // Ligações: agrupadas em poucas faixas de opacidade, para trocar
-    // ~150 chamadas de stroke() por 3. Em modo degradado, saem de cena.
     if (!degraded) {
       for (const bucket of tiers) bucket.length = 0;
 
@@ -277,7 +234,6 @@ export function initBackground(canvas, fxCanvas) {
       }
     }
 
-    // Meteoros
     if (Math.random() < 0.0035 && meteors.length < 2) {
       const fromLeft = Math.random() < 0.5;
       meteors.push({
@@ -315,8 +271,6 @@ export function initBackground(canvas, fxCanvas) {
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  /* ── Ciclo de vida ──────────────────────────────────────────────── */
-
   let resizeTimer = 0;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -330,12 +284,9 @@ export function initBackground(canvas, fxCanvas) {
 
   document.addEventListener('visibilitychange', () => {
     paused = document.hidden;
-    // Se a página carregou numa aba oculta, pode ter medido 0×0 e nunca
-    // recebido um frame para se corrigir. Ao voltar, remede na hora.
     if (!paused) syncSize();
   });
 
-  /** Realinha os canvases à viewport, se ela mudou. */
   function syncSize() {
     const vw = window.innerWidth, vh = window.innerHeight;
     if (vw > 1 && vh > 1 && (Math.abs(vw - w) > 1 || Math.abs(vh - h) > 1)) resize();
@@ -345,7 +296,6 @@ export function initBackground(canvas, fxCanvas) {
   frame(performance.now());
 
   return {
-    /** Sacode as partículas — usado nos glitches. */
     shockwave() {
       for (const p of particles) {
         p.vx += rand(-1.2, 1.2);

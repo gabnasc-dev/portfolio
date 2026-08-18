@@ -1,7 +1,3 @@
-/**
- * Gerenciador mínimo de janelas flutuantes: cria, empilha, arrasta e fecha.
- */
-
 const host = () => document.getElementById('windows');
 let z = 100;
 const open = new Map();
@@ -44,8 +40,6 @@ export function openWindow({ id, title, width = 460, height = 'auto', x, y, body
   if (height !== 'auto') {
     bodyEl.style.maxHeight = typeof height === 'number' ? `${height}px` : height;
   } else {
-    // Cabe no que sobra abaixo do topo da janela, descontando barra de título,
-    // a sysbar e uma folga — senão o conteúdo transborda da viewport.
     const HEADER = 38, SYSBAR = 30, GAP = 16;
     const available = window.innerHeight - top - HEADER - SYSBAR - GAP;
     bodyEl.style.maxHeight = `${Math.max(200, Math.min(Math.round(window.innerHeight * 0.62), available))}px`;

@@ -1,10 +1,4 @@
-/* ══════════════════════════════════════════════════════════════════════
-   NebulaOS — folha de estilo
-   Paleta: preto profundo, azul-marinho, azul elétrico. Sem neon estridente.
-   ══════════════════════════════════════════════════════════════════════ */
-
 :root {
-  /* Superfícies */
   --void:        #03050d;
   --deep:        #060b1a;
   --navy:        #0a1226;
@@ -12,34 +6,27 @@
   --edge:        rgba(120, 165, 235, 0.14);
   --edge-strong: rgba(140, 185, 255, 0.28);
 
-  /* Azuis */
   --blue:        #2f7dff;
   --blue-soft:   #4d93ff;
   --ice:         #7fc4ff;
   --glow:        rgba(47, 125, 255, 0.35);
 
-  /* Texto */
   --fg:          #d3ddf0;
   --fg-dim:      #8698b8;
   --fg-faint:    #5a6b8a;
   --white:       #ffffff;
 
-  /* Semântica */
   --ok:          #4fd39b;
   --warn:        #e8b661;
   --err:         #ef6a6a;
 
-  /* Tipografia */
+
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
   --sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-
-  /* Ritmo */
   --r-win: 14px;
   --r-sm: 8px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-
-  /* Posição do cursor (lanterna) */
   --mx: 50vw;
   --my: 50vh;
 }
@@ -65,11 +52,6 @@ body { cursor: default; }
 
 button { font: inherit; color: inherit; }
 
-/* ── Fundo ─────────────────────────────────────────────────────────── */
-
-/* Duas camadas: #space recebe a nebulosa e só é redesenhado em resize, então
-   o compositor a mantém como textura estática. #space-fx é transparente e
-   carrega apenas o que anima. Isso elimina o blit de tela cheia por frame. */
 #space,
 #space-fx {
   position: fixed;
@@ -82,9 +64,6 @@ button { font: inherit; color: inherit; }
 #space    { z-index: 0; }
 #space-fx { z-index: 1; }
 
-/* `translateZ(0)` nos overlays estáticos: sem isso eles ficam na mesma camada
-   do canvas que anima embaixo e são repintados a cada frame, apesar de nunca
-   mudarem. Promovidos, o compositor só os reaproveita. */
 .vignette {
   position: fixed;
   inset: 0;
@@ -95,8 +74,6 @@ button { font: inherit; color: inherit; }
     radial-gradient(ellipse 120% 90% at 50% 45%, transparent 30%, rgba(3, 5, 13, 0.55) 78%, rgba(3, 5, 13, 0.92) 100%);
 }
 
-/* Sem `mix-blend-mode`: um blend de viewport inteira força o navegador a
-   compor a página toda num buffer separado. O ganho visual não paga o custo. */
 .scanlines {
   position: fixed;
   inset: 0;
@@ -110,8 +87,6 @@ button { font: inherit; color: inherit; }
   );
 }
 
-/* Lanterna: camada de tamanho fixo, movida por transform (ver torch.js).
-   A origem do gradiente é o centro do elemento, por isso a margem negativa. */
 .torch {
   position: fixed;
   top: 0;
@@ -132,8 +107,6 @@ button { font: inherit; color: inherit; }
     transparent 72%);
 }
 .torch.is-on { opacity: 1; }
-
-/* ── Boot ──────────────────────────────────────────────────────────── */
 
 .boot {
   position: fixed;
@@ -186,8 +159,6 @@ button { font: inherit; color: inherit; }
   transition: transform 0.25s linear;
 }
 
-/* ── Mundo / câmera ────────────────────────────────────────────────── */
-
 .world {
   position: fixed;
   inset: 0;
@@ -218,7 +189,6 @@ button { font: inherit; color: inherit; }
   filter: none;
 }
 
-/* Terminal recuando quando outra camada assume */
 .layer--terminal { transform: scale(1) translateZ(0); }
 .layer--terminal.is-receding {
   opacity: 0;
@@ -228,11 +198,8 @@ button { font: inherit; color: inherit; }
   pointer-events: none;
 }
 
-/* Camadas que chegam "de longe" */
 .layer--constellation,
 .layer--skills { transform: scale(1.45) translateZ(-260px); filter: blur(6px); }
-
-/* ── Janela (chrome Win95 reinterpretado) ──────────────────────────── */
 
 .win {
   position: relative;
@@ -241,11 +208,6 @@ button { font: inherit; color: inherit; }
   background: linear-gradient(170deg, rgba(14, 25, 50, 0.82), rgba(6, 11, 26, 0.92));
   border: 1px solid var(--edge);
   border-radius: var(--r-win);
-  /* Sem backdrop-filter de propósito. O fundo da janela já está entre 82% e
-     92% de opacidade, então o desfoque atrás dela era quase imperceptível —
-     mas obrigava o navegador a refazer o snapshot desfocado a cada frame,
-     porque o canvas embaixo nunca para de animar. Era o item mais caro da
-     página no Firefox, em troca de quase nenhum ganho visual. */
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.5),
     0 32px 80px -20px rgba(0, 0, 0, 0.85),
@@ -254,7 +216,6 @@ button { font: inherit; color: inherit; }
   overflow: hidden;
 }
 
-/* Linha de luz no topo — o "brilho de tela ligada" */
 .win::before {
   content: '';
   position: absolute;
@@ -267,8 +228,6 @@ button { font: inherit; color: inherit; }
 .win--terminal {
   width: min(880px, 92vw);
   height: min(600px, 74vh);
-  /* Camada própria: as sombras largas desta janela são caras de pintar, e
-     sem promoção ela era repintada junto com o canvas animado atrás. */
   transform: translateZ(0);
 }
 
@@ -358,7 +317,6 @@ button { font: inherit; color: inherit; }
   padding: 0 4px;
 }
 
-/* Estados da janela do terminal */
 .win--terminal.is-minimized {
   height: 38px;
   transition: height 0.45s var(--ease);
@@ -372,8 +330,6 @@ button { font: inherit; color: inherit; }
   transition: width 0.5s var(--ease), height 0.5s var(--ease);
 }
 
-/* ── Terminal ──────────────────────────────────────────────────────── */
-
 .term {
   display: flex;
   flex-direction: column;
@@ -385,9 +341,6 @@ button { font: inherit; color: inherit; }
   scrollbar-width: thin;
   scrollbar-color: rgba(120, 165, 235, 0.25) transparent;
   cursor: text;
-  /* Isola o reflow do terminal do resto da página. Importa ao maximizar a
-     janela: o texto reflui a cada passo da animação, e sem contenção esse
-     recálculo se propaga para fora. */
   contain: layout paint;
 }
 .term::-webkit-scrollbar { width: 8px; }
@@ -412,9 +365,6 @@ button { font: inherit; color: inherit; }
   display: flex;
   align-items: baseline;
   gap: 0;
-  /* Sem `pre-wrap` aqui: num container flex ele transformaria a indentação
-     do HTML em itens anônimos com quebra de linha. Quem precisa preservar
-     espaços é o prompt e o texto digitado, abaixo. */
   word-break: break-word;
 }
 
@@ -447,7 +397,6 @@ button { font: inherit; color: inherit; }
 .term.is-busy .term__cursor { animation: none; opacity: 0.35; }
 .term.is-blur .term__cursor { background: var(--fg-faint); box-shadow: none; animation: none; opacity: 0.5; }
 
-/* Ancorado ao canto da janela (que não rola), nunca ao fluxo do terminal. */
 .term__real {
   position: absolute;
   bottom: 0;
@@ -459,7 +408,6 @@ button { font: inherit; color: inherit; }
   pointer-events: none;
 }
 
-/* Cores semânticas do output */
 .c-prompt  { color: var(--blue-soft); }
 .c-user    { color: var(--ice); }
 .c-path    { color: #9db6e0; }
@@ -504,7 +452,6 @@ button { font: inherit; color: inherit; }
   margin: 10px 0;
 }
 
-/* neofetch */
 .neofetch { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-start; }
 .neofetch__art {
   color: var(--blue-soft);
@@ -524,12 +471,9 @@ button { font: inherit; color: inherit; }
   display: block;
 }
 
-/* Tabela de ajuda */
 .helpgrid { display: grid; grid-template-columns: 150px 1fr; gap: 2px 16px; }
 .helpgrid dt { color: var(--ice); }
 .helpgrid dd { margin: 0; color: var(--fg-dim); }
-
-/* ── Glitch ────────────────────────────────────────────────────────── */
 
 .glitch {
   animation: glitchShake 0.32s steps(2) 1;
@@ -557,7 +501,6 @@ button { font: inherit; color: inherit; }
 @keyframes glitchA { 0%,100% { transform: none; opacity: 0; } 30% { transform: translateX(-2px); opacity: .7; } 60% { transform: translateX(2px); opacity: .4; } }
 @keyframes glitchB { 0%,100% { transform: none; opacity: 0; } 35% { transform: translateX(2px);  opacity: .7; } 65% { transform: translateX(-2px); opacity: .4; } }
 
-/* Glitch global (easter egg) */
 .world.is-glitching { animation: worldGlitch 0.6s steps(3) 1; }
 @keyframes worldGlitch {
   0%, 100% { filter: none; transform: none; }
@@ -565,8 +508,6 @@ button { font: inherit; color: inherit; }
   50% { filter: invert(0.1) saturate(1.8);       transform: translateX(5px)  skewX(-0.8deg); }
   75% { filter: hue-rotate(-40deg);              transform: translateX(-2px); }
 }
-
-/* ── HUD das camadas ───────────────────────────────────────────────── */
 
 .layer__hud {
   position: absolute;
@@ -621,8 +562,6 @@ button { font: inherit; color: inherit; }
   border-radius: 3px;
   color: var(--fg-faint);
 }
-
-/* ── Constelação ───────────────────────────────────────────────────── */
 
 .constellation {
   position: absolute;
@@ -716,7 +655,6 @@ button { font: inherit; color: inherit; }
   margin-top: 3px;
 }
 
-/* Nome fica sempre levemente visível para dar leitura ao céu */
 .star .star__label { opacity: 0.42; }
 .star:hover .star__label,
 .star:focus-visible .star__label { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -733,7 +671,6 @@ button { font: inherit; color: inherit; }
 .star.is-dimmed { opacity: 0.25; }
 .star { transition: opacity 0.5s var(--ease); }
 
-/* Status por projeto */
 .star--WIP  .star__core { background: radial-gradient(circle at 40% 35%, #fff 0%, #ffd9a0 34%, #e8b661 72%, transparent 100%); box-shadow: 0 0 18px rgba(232,182,97,.5), 0 0 44px rgba(232,182,97,.28); }
 .star--BETA .star__core { background: radial-gradient(circle at 40% 35%, #fff 0%, #b9e6ff 34%, #4d93ff 72%, transparent 100%); }
 
@@ -822,8 +759,6 @@ button { font: inherit; color: inherit; }
   border-radius: 10px;
   box-shadow: 0 18px 44px -14px rgba(0, 0, 0, 0.9), 0 0 40px -18px var(--glow);
   opacity: 0;
-  /* `transform` é reservado ao posicionamento (definido via JS); a
-     entrada usa só opacidade para não brigar com o estilo inline. */
   transition: opacity 0.22s var(--ease), transform 0.12s linear;
   pointer-events: none;
   z-index: 8;
@@ -856,8 +791,6 @@ button { font: inherit; color: inherit; }
   background: linear-gradient(90deg, var(--blue), var(--ice));
   box-shadow: 0 0 10px var(--glow);
 }
-
-/* ── Janelas flutuantes ────────────────────────────────────────────── */
 
 .windows {
   position: fixed;
@@ -896,7 +829,6 @@ button { font: inherit; color: inherit; }
   border-radius: 8px; border: 2px solid transparent; background-clip: padding-box;
 }
 
-/* Detalhe de projeto */
 .proj__head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
 .proj__title {
   font-family: var(--sans);
@@ -1001,8 +933,6 @@ button { font: inherit; color: inherit; }
   opacity: 0.4; cursor: not-allowed; pointer-events: none;
 }
 
-/* ── Jogos ─────────────────────────────────────────────────────────── */
-
 .game { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px; }
 .game__canvas {
   border: 1px solid var(--edge);
@@ -1011,7 +941,6 @@ button { font: inherit; color: inherit; }
   box-shadow: inset 0 0 60px -20px var(--glow);
   display: block;
   touch-action: none;
-  /* Escala junto com a janela em telas estreitas, mantendo a proporção. */
   max-width: 100%;
   height: auto;
 }
@@ -1056,7 +985,6 @@ button { font: inherit; color: inherit; }
 }
 .coffee__txt { font-family: var(--sans); font-size: 14px; color: var(--fg); max-width: 280px; line-height: 1.6; }
 
-/* Controle do konami: linha luminosa, no mesmo vocabulário do resto da UI */
 .gamepad {
   width: 104px;
   height: auto;
@@ -1085,7 +1013,6 @@ button { font: inherit; color: inherit; }
 }
 .coffee__sub { font-size: 11px; color: var(--fg-faint); letter-spacing: 0.1em; }
 
-/* Contratação */
 .hire { padding: 26px 26px 24px; text-align: center; }
 .hire__seal {
   width: 68px; height: 68px;
@@ -1112,8 +1039,6 @@ button { font: inherit; color: inherit; }
 .hire__row span:first-child { color: var(--fg-faint); letter-spacing: 0.08em; }
 .hire__row span:last-child { color: var(--fg); text-align: right; }
 
-/* ── Barra de sistema ──────────────────────────────────────────────── */
-
 .sysbar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -1135,7 +1060,6 @@ button { font: inherit; color: inherit; }
 .sysbar__spacer { flex: 1; }
 .sysbar__item--pulse { color: var(--ok); animation: pulseDot 3.2s ease-in-out infinite; }
 
-/* ── Responsivo ────────────────────────────────────────────────────── */
 
 @media (max-width: 720px) {
   html, body { font-size: 14px; }

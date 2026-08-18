@@ -1,8 +1,3 @@
-/**
- * Constelação de projetos: cada estrela é um projeto. Clicar leva a
- * câmera até ela e abre a janela de detalhes.
- */
-
 import { projects, constellationEdges } from './data.js';
 import { openWindow, closeWindow, isWindowOpen } from './windows.js';
 import { escapeHTML } from './terminal.js';
@@ -20,7 +15,6 @@ export function initConstellation() {
   if (built) return;
   built = true;
 
-  // Estrelas
   projects.forEach((p, i) => {
     const btn = document.createElement('button');
     btn.className = `star star--${p.status}`;
@@ -42,7 +36,6 @@ export function initConstellation() {
     starsHost.appendChild(btn);
   });
 
-  // Linhas entre estrelas
   drawLinks();
   window.addEventListener('resize', drawLinks);
 }
@@ -64,7 +57,6 @@ function drawLinks() {
   });
 }
 
-/** Move a câmera até a estrela e abre o detalhe. */
 export function selectStar(id) {
   const p = projects.find((x) => x.id === id);
   if (!p) return;
@@ -79,7 +71,6 @@ export function selectStar(id) {
     s.classList.toggle('is-dimmed', !isIt);
   });
 
-  // A estrela vai para a esquerda da tela; a janela ocupa a direita.
   const wide = window.innerWidth > 900;
   const targetX = wide ? 28 : 50;
   const targetY = wide ? 44 : 26;

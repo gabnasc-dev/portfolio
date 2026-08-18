@@ -1,8 +1,3 @@
-/**
- * NebulaOS — ponto de entrada.
- * Liga boot, fundo, lanterna, terminal, câmera e atalhos globais.
- */
-
 import { initBackground } from './background.js';
 import { initTorch } from './torch.js';
 import { Terminal, sleep } from './terminal.js';
@@ -13,8 +8,6 @@ import { closeAllWindows } from './windows.js';
 import { launchKonami } from './games.js';
 import { profile } from './data.js';
 
-// O fundo é decorativo: se o canvas falhar (aba oculta, contexto negado),
-// o sistema continua utilizável.
 let bg = { shockwave() {}, destroy() {} };
 try {
   bg = initBackground(
@@ -31,8 +24,6 @@ const layerTerminal = document.getElementById('layer-terminal');
 const layerConstellation = document.getElementById('layer-constellation');
 const layerSkills = document.getElementById('layer-skills');
 const termWindow = document.getElementById('terminal-window');
-
-/* ── Câmera ────────────────────────────────────────────────────────── */
 
 let view = 'terminal';
 
@@ -103,13 +94,9 @@ const world = {
   },
 };
 
-/* ── Terminal ──────────────────────────────────────────────────────── */
-
 const term = new Terminal(document.getElementById('term'));
 term.completions = buildCompleter(term);
 term.onCommand = (cmd) => runCommand(cmd, { term, camera, world, bg });
-
-/* ── Chrome da janela do terminal ──────────────────────────────────── */
 
 document.getElementById('terminal-bar').addEventListener('click', (e) => {
   const action = e.target.closest('[data-win-action]')?.dataset.winAction;
@@ -126,13 +113,9 @@ document.getElementById('terminal-bar').addEventListener('click', (e) => {
   }
 });
 
-/* ── Botões de voltar ──────────────────────────────────────────────── */
-
 document.querySelectorAll('[data-back]').forEach((b) => {
   b.addEventListener('click', () => camera.toTerminal());
 });
-
-/* ── Atalhos globais ───────────────────────────────────────────────── */
 
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && view !== 'terminal') {
@@ -140,7 +123,6 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-/* Konami pelo teclado, em qualquer tela */
 const KONAMI = [
   'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
   'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a',
@@ -161,8 +143,6 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-/* ── Relógio da barra de status ────────────────────────────────────── */
-
 const clock = document.getElementById('status-clock');
 function tickClock() {
   clock.textContent = new Date().toLocaleTimeString('pt-BR', {
@@ -171,8 +151,6 @@ function tickClock() {
 }
 tickClock();
 setInterval(tickClock, 20000);
-
-/* ── Boot ──────────────────────────────────────────────────────────── */
 
 const BOOT_LINES = [
   'NebulaOS BIOS v2.5.0 — Nebula Systems',
@@ -224,5 +202,4 @@ async function welcome({ fast }) {
 
 boot();
 
-/* Expõe o mínimo para depuração no console — sem poluir o escopo global. */
 window.NebulaOS = { camera, term, world };

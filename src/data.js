@@ -1,8 +1,3 @@
-/**
- * Conteúdo do portfólio. Tudo que é "sobre o Gabriel" mora aqui —
- * o resto do sistema apenas renderiza.
- */
-
 export const profile = {
   name: 'Gabriel do Nascimento Rodrigues',
   short: 'Gabriel',
@@ -22,8 +17,6 @@ export const profile = {
     'Aprendendo Java + Spring Boot para expandir o stack backend',
     'Construindo APIs, análise de dados e automações em Python',
   ],
-  // Resolvido a partir do `base` do Vite: o PDF vive em public/ e é
-  // publicado junto com o site, então o link acompanha a hospedagem.
   resume: `${import.meta.env.BASE_URL}Curriculo.pdf`,
   uptime: 'desde 2024 · ~2 anos de órbita',
 };
@@ -35,10 +28,6 @@ export const contacts = [
   { id: 'resume',   label: 'Currículo', value: 'Curriculo.pdf',                  href: profile.resume },
 ];
 
-/**
- * Projetos. `x`/`y` são coordenadas relativas (0–100) no céu da constelação.
- * `mag` é a magnitude aparente — estrelas maiores = projetos de maior peso.
- */
 export const projects = [
   {
     id: 'sge',
@@ -188,7 +177,6 @@ export const projects = [
   },
 ];
 
-/** Ligações da constelação (por id) — desenham as linhas entre estrelas. */
 export const constellationEdges = [
   ['sge', 'carros'],
   ['sge', 'flix-api'],
@@ -200,10 +188,6 @@ export const constellationEdges = [
   ['automacao', 'analise-dados'],
 ];
 
-/**
- * Skill tree. `tier` controla a camada (0 = núcleo).
- * `x`/`y` no espaço 1000×640 do SVG.
- */
 export const skills = [
   { id: 'core', name: 'Gabriel', group: 'core', x: 500, y: 320, level: 0, tier: 0,
     desc: 'Núcleo do sistema. Backend em primeiro lugar, web de ponta a ponta.' },
@@ -259,7 +243,6 @@ export const timeline = [
   { year: '2026', title: 'NoSQL distribuído', desc: 'Modelagem em Apache Cassandra sobre cluster em Docker.', current: true },
 ];
 
-/** Sistema de arquivos virtual usado por ls / cd / cat / tree. */
 export const fs = {
   name: '~',
   type: 'dir',

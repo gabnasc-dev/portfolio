@@ -1,17 +1,9 @@
-﻿/**
- * Minigames e animações dos comandos secretos.
- * Cada jogo se registra numa janela flutuante e limpa seu próprio rAF
- * ao fechar (via onClose).
- */
-
-import { openWindow, closeWindow } from './windows.js';
+﻿import { openWindow, closeWindow } from './windows.js';
 import { profile, contacts } from './data.js';
 
 const BLUE = '#2f7dff';
 const ICE = '#7fc4ff';
 const DIM = 'rgba(120, 165, 235, 0.14)';
-
-/* ══ Snake ═══════════════════════════════════════════════════════════ */
 
 export function launchSnake() {
   const CELL = 18;
@@ -172,8 +164,6 @@ export function launchSnake() {
   });
 }
 
-/* ══ Tetris ══════════════════════════════════════════════════════════ */
-
 export function launchTetris() {
   const CELL = 22;
   const COLS = 10;
@@ -250,7 +240,6 @@ export function launchTetris() {
   function rotate() {
     const n = piece.size - 1;
     const rotated = piece.cells.map(([x, y]) => [n - y, x]);
-    // Kick simples: tenta no lugar, depois 1 para cada lado
     for (const dx of [0, -1, 1, -2, 2]) {
       if (!collides(rotated, piece.x + dx, piece.y)) {
         piece.cells = rotated;
@@ -411,8 +400,6 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-/* ══ Café ════════════════════════════════════════════════════════════ */
-
 const COFFEE_LINES = [
   'Combustível recarregado. Compilação em 3, 2, 1…',
   'A cafeína é o único runtime que nunca falha.',
@@ -433,8 +420,6 @@ export function launchCoffee() {
   openWindow({ id: 'coffee', title: 'nebula://sys/coffee.exe', width: 340, body: wrap });
   setTimeout(() => closeWindow('coffee'), 7000);
 }
-
-/* ══ sudo hire gabriel ═══════════════════════════════════════════════ */
 
 export function launchHire() {
   const wrap = document.createElement('div');
@@ -460,7 +445,6 @@ export function launchHire() {
   openWindow({ id: 'hire', title: 'nebula://sys/authorize', width: 400, body: wrap });
 }
 
-/* ══ Konami ══════════════════════════════════════════════════════════ */
 
 export function launchKonami() {
   const wrap = document.createElement('div');

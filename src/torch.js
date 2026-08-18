@@ -1,13 +1,3 @@
-/**
- * Lanterna que segue o cursor.
- *
- * Implementada como um elemento de tamanho fixo movido por `transform`,
- * e não como um gradiente de viewport inteira reposicionado por variáveis
- * CSS. A diferença é grande: mudar `--mx/--my` obriga o navegador a
- * repintar um gradiente do tamanho da tela a cada frame — no Firefox isso
- * sozinho derruba o frame rate. Movendo uma camada já pintada, o trabalho
- * por frame vira só composição.
- */
 export function initTorch(el) {
   if (window.matchMedia('(pointer: coarse)').matches) return;
 
@@ -18,7 +8,6 @@ export function initTorch(el) {
   let on = false;
 
   function apply() {
-    // Amortecimento leve: a luz "arrasta" um pouco atrás do cursor
     x += (tx - x) * 0.18;
     y += (ty - y) * 0.18;
     el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;

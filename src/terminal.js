@@ -1,8 +1,3 @@
-/**
- * Motor do terminal: entrada, cursor, histórico, autocomplete inline,
- * efeito de digitação e renderização do output.
- */
-
 import { profile } from './data.js';
 
 export class Terminal {
@@ -13,8 +8,6 @@ export class Terminal {
     this.promptEl = root.querySelector('#term-prompt');
     this.typedEl = root.querySelector('#term-typed');
     this.ghostEl = root.querySelector('#term-ghost');
-    // Vive fora de `root` (ver index.html): dentro do container que rola,
-    // o navegador rolava até ele a cada tecla.
     this.input = document.getElementById('term-real');
 
     this.cwd = ['~'];
@@ -28,8 +21,6 @@ export class Terminal {
     this._bind();
     this.renderPrompt();
   }
-
-  /* ── Prompt ──────────────────────────────────────────────────────── */
 
   get path() { return this.cwd.join('/').replace(/^~\/?/, '~/').replace(/\/$/, '') || '~'; }
 
@@ -50,8 +41,6 @@ export class Terminal {
       `<span class="c-accent">${profile.host}</span><span class="c-dim">:</span>` +
       `<span class="c-path">${this.path}</span><span class="c-prompt"> $ </span>`;
   }
-
-  /* ── Entrada ─────────────────────────────────────────────────────── */
 
   _bind() {
     const focus = () => { if (!this.busy) this.input.focus({ preventScroll: true }); };
@@ -111,7 +100,6 @@ export class Terminal {
         break;
       }
       case 'ArrowRight': {
-        // Aceita a sugestão fantasma quando o cursor está no fim
         if (this.input.selectionStart === this.input.value.length && this.ghostEl.dataset.rest) {
           e.preventDefault();
           this.setValue(this.input.value + this.ghostEl.dataset.rest);
@@ -150,13 +138,10 @@ export class Terminal {
     this.input.value = v;
     this.typedEl.textContent = v;
     this.updateGhost();
-    // Garante que o cursor do input real fique no fim
     requestAnimationFrame(() => {
       try { this.input.setSelectionRange(v.length, v.length); } catch { /* noop */ }
     });
   }
-
-  /* ── Autocomplete ────────────────────────────────────────────────── */
 
   updateGhost() {
     const v = this.input.value;
@@ -189,7 +174,6 @@ export class Terminal {
       return;
     }
 
-    // Lista as opções, como um shell de verdade
     this.echoLine(v);
     this.print(
       `<div class="term__block c-mute">${matches
@@ -198,8 +182,6 @@ export class Terminal {
     );
     this.setValue(v);
   }
-
-  /* ── Histórico ───────────────────────────────────────────────────── */
 
   navHistory(dir) {
     if (this.history.length === 0) return;
@@ -212,8 +194,6 @@ export class Terminal {
     this.setValue(v);
     if (this.histIdx === this.history.length) this.histIdx = -1;
   }
-
-  /* ── Execução ────────────────────────────────────────────────────── */
 
   async submit(raw) {
     const cmd = raw.trim();
@@ -246,21 +226,16 @@ export class Terminal {
     );
   }
 
-  /* ── Saída ───────────────────────────────────────────────────────── */
-
   print(html) {
     const frag = document.createElement('div');
     frag.innerHTML = html;
     while (frag.firstChild) this.out.appendChild(frag.firstChild);
     this.scrollToEnd();
   }
-
-  /** Imprime texto puro (escapado) como bloco. */
   printText(text, cls = '') {
     this.print(`<div class="term__block ${cls}">${escapeHTML(text)}</div>`);
   }
 
-  /** Imprime linha a linha, com atraso — efeito de "resposta chegando". */
   async printSlow(lines, { delay = 26, cls = '' } = {}) {
     const arr = Array.isArray(lines) ? lines : String(lines).split('\n');
     for (const l of arr) {
@@ -269,7 +244,6 @@ export class Terminal {
     }
   }
 
-  /** Digita um texto caractere a caractere. */
   async type(text, { speed = 16, cls = '' } = {}) {
     const el = document.createElement('div');
     el.className = `term__block ${cls}`;
@@ -296,8 +270,6 @@ export class Terminal {
     setTimeout(() => this.root.classList.remove('glitch'), 400);
   }
 }
-
-/* ── utilitários ───────────────────────────────────────────────────── */
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

@@ -1,14 +1,9 @@
-/**
- * Skill tree em grafo: nós ligados por arestas, com anel de proficiência,
- * realce de vizinhança no hover e tooltip flutuante.
- */
-
 import { skills, skillEdges } from './data.js';
 import { escapeHTML } from './terminal.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const R = 46;       // raio do nó
-const R_CORE = 58;  // raio do núcleo
+const R = 46;
+const R_CORE = 58;
 
 const GROUP_LABEL = {
   core: 'NÚCLEO',
@@ -30,8 +25,6 @@ export function initSkillTree() {
   wrap = document.getElementById('skilltree');
 
   const byId = Object.fromEntries(skills.map((s) => [s.id, s]));
-
-  // Camada de arestas primeiro (fica atrás dos nós)
   const gEdges = document.createElementNS(SVG_NS, 'g');
   svg.appendChild(gEdges);
   const gNodes = document.createElementNS(SVG_NS, 'g');
@@ -81,7 +74,6 @@ export function initSkillTree() {
     g.appendChild(ring);
 
     if (!isCore) {
-      // Arco de proficiência, começando às 12h
       const arc = document.createElementNS(SVG_NS, 'circle');
       arc.setAttribute('class', 'sk-node__arc');
       arc.setAttribute('r', String(r));
@@ -126,7 +118,6 @@ export function initSkillTree() {
 
     const enter = (e) => {
       highlight(s.id, edgeEls, nodeEls, byId);
-      // Posiciona já na entrada: o foco por teclado nunca gera pointermove.
       if (e?.clientX != null) moveTip(e);
       else placeTipAtNode(g);
     };
@@ -146,7 +137,6 @@ export function initSkillTree() {
 function curve(a, b) {
   const mx = (a.x + b.x) / 2;
   const my = (a.y + b.y) / 2;
-  // Curvatura proporcional à distância, perpendicular à reta
   const dx = b.x - a.x, dy = b.y - a.y;
   const d = Math.hypot(dx, dy) || 1;
   const bow = Math.min(46, d * 0.13);
@@ -187,7 +177,6 @@ function clearHighlight(edgeEls, nodeEls) {
   tip.classList.remove('is-on');
 }
 
-/** Ancora o tooltip ao próprio nó — usado no foco por teclado. */
 function placeTipAtNode(g) {
   const box = wrap.getBoundingClientRect();
   const nb = g.getBoundingClientRect();
@@ -204,7 +193,6 @@ function placeTip(rawX, rawY, box) {
   let y = rawY;
   const tw = tip.offsetWidth || 260;
   const th = tip.offsetHeight || 120;
-  // Vira o tooltip para dentro quando encostaria na borda do painel
   if (x + tw > box.width) x = rawX - tw - 40;
   if (y + th > box.height) y = rawY - th - 32;
   x = Math.max(0, Math.min(x, Math.max(0, box.width - tw)));

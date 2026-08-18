@@ -1,13 +1,7 @@
-/**
- * Comandos do NebulaOS. Cada handler recebe (args, ctx) e escreve no
- * terminal. `ctx` expõe o terminal, a câmera e o fundo.
- */
-
 import { profile, contacts, projects, skills, timeline, fs } from './data.js';
 import { escapeHTML, sleep } from './terminal.js';
 import { launchSnake, launchTetris, launchCoffee, launchHire, launchKonami } from './games.js';
 
-/* ── Sistema de arquivos virtual ───────────────────────────────────── */
 
 export function resolve(cwd, target) {
   const parts = [];
@@ -48,8 +42,6 @@ function listing(node, { all = false } = {}) {
     });
 }
 
-/* ── Registro ──────────────────────────────────────────────────────── */
-
 export const registry = {};
 
 function cmd(name, { desc, usage, hidden = false, run }) {
@@ -58,8 +50,6 @@ function cmd(name, { desc, usage, hidden = false, run }) {
 
 export const visibleCommands = () =>
   Object.values(registry).filter((c) => !c.hidden);
-
-/* ── help ──────────────────────────────────────────────────────────── */
 
 cmd('help', {
   desc: 'Lista os comandos disponíveis',
@@ -79,8 +69,6 @@ cmd('help', {
     term.spacer();
   },
 });
-
-/* ── Navegação ─────────────────────────────────────────────────────── */
 
 cmd('ls', {
   desc: 'Lista o conteúdo do diretório',
@@ -180,8 +168,6 @@ function walk(node, prefix, lines, all) {
     }
   });
 }
-
-/* ── Conteúdo ──────────────────────────────────────────────────────── */
 
 cmd('projects', {
   desc: 'Abre a constelação interativa de projetos',
@@ -336,8 +322,6 @@ cmd('neofetch', {
   },
 });
 
-/* ── Utilitários ───────────────────────────────────────────────────── */
-
 cmd('clear', {
   desc: 'Limpa a tela',
   run: async (_a, { term }) => term.clear(),
@@ -405,8 +389,6 @@ cmd('banner', {
   desc: 'Reexibe o cabeçalho do sistema',
   run: async (_a, { term }) => printBanner(term),
 });
-
-/* ── Secretos ──────────────────────────────────────────────────────── */
 
 cmd('sudo', {
   desc: 'Executa como superusuário',
@@ -506,8 +488,6 @@ cmd('rm', {
   },
 });
 
-/* ── Auxiliares ────────────────────────────────────────────────────── */
-
 function err(term, msg) {
   term.glitch();
   term.print(
@@ -540,8 +520,6 @@ export function printBanner(term) {
     `<div class="term__block c-dim">  v2.5.0 · terminal de bordo · sessão de visitante</div>`
   );
 }
-
-/* ── Execução ──────────────────────────────────────────────────────── */
 
 export async function runCommand(input, ctx) {
   const parts = input.trim().split(/\s+/);
@@ -591,13 +569,9 @@ function levenshtein(a, b) {
   return m[a.length][b.length];
 }
 
-/* ── Autocomplete ──────────────────────────────────────────────────── */
-
 export function buildCompleter(term) {
   return (value) => {
     const parts = value.split(/\s+/);
-
-    // Primeira palavra: nomes de comando
     if (parts.length <= 1) {
       return Object.keys(registry).filter((c) => !registry[c].hidden || c === parts[0]).sort();
     }
